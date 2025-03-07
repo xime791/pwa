@@ -119,7 +119,7 @@ async function sendPush(req, res) {
   }
 }
 
-const clientBuildPath = path.join(__dirname, '../../build');
+const clientBuildPath = path.join(__dirname, '../../../build');
 if (fs.existsSync(clientBuildPath)) {
   app.use(express.static(clientBuildPath));
   app.get('*', (req, res) => {
