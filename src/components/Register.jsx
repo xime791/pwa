@@ -52,7 +52,7 @@ const Register = () => {
         const userData = { ...formData, subscription }; // Agregar la suscripción al usuario
 
         try {
-            const response = await fetch('/usuarios', {
+            const response = await fetch('/api/usuarios', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
