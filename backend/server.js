@@ -28,6 +28,7 @@ if (!publicKey || !privateKey) {
   console.error('ERROR: Claves VAPID no encontradas.');
   process.exit(1);
 }
+webpush.setVapidDetails('mailto:prueba@gmail.com', publicKey, privateKey);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -119,11 +120,8 @@ async function sendPush(req, res) {
   }
 }
 
-// Definir ruta a `build`
-console.log("Directorio actual (__dirname):", __dirname);
-const clientBuildPath = path.resolve(__dirname, '../../build'); 
-console.log("Ruta de build:", clientBuildPath);
-
+// Servir archivos estáticos de React
+const clientBuildPath = path.join(__dirname, '../../build');
 if (fs.existsSync(clientBuildPath)) {
   app.use(express.static(clientBuildPath));
   app.get('*', (req, res) => {
@@ -132,6 +130,7 @@ if (fs.existsSync(clientBuildPath)) {
 } else {
   console.error('Error: No se encontró la carpeta build. Asegúrate de que Vite generó la carpeta correctamente.');
 }
+
 // Iniciar servidor
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
