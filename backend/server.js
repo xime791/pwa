@@ -118,10 +118,8 @@ async function sendPush(req, res) {
     res.status(500).json({ mensaje: "No se pudo enviar la notificación" });
   }
 }
-// Servir archivos estáticos de React
-const clientBuildPath = path.resolve(__dirname, '../../react-pwa (2)/react-pwa/build'); // Ajuste con la carpeta extra
 
-console.log('Ruta de build:', clientBuildPath);
+const clientBuildPath = path.join(__dirname, '../../build');
 if (fs.existsSync(clientBuildPath)) {
   app.use(express.static(clientBuildPath));
   app.get('*', (req, res) => {
