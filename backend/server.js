@@ -119,7 +119,7 @@ async function sendPush(req, res) {
   }
 }
 // Servir archivos estáticos de React
-const clientBuildPath = path.join(__dirname, '../../dist');
+const clientBuildPath = path.join(__dirname, '../../build');
 if (fs.existsSync(clientBuildPath)) {
   app.use(express.static(clientBuildPath));
   app.get('*', (req, res) => {
