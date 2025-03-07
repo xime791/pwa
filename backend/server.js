@@ -119,8 +119,11 @@ async function sendPush(req, res) {
   }
 }
 
-const clientBuildPath = path.resolve(__dirname, '../../../build'); 
+// Definir ruta a `build`
+console.log("Directorio actual (__dirname):", __dirname);
+const clientBuildPath = path.resolve(__dirname, '../../build'); 
 console.log("Ruta de build:", clientBuildPath);
+
 if (fs.existsSync(clientBuildPath)) {
   app.use(express.static(clientBuildPath));
   app.get('*', (req, res) => {
@@ -129,7 +132,6 @@ if (fs.existsSync(clientBuildPath)) {
 } else {
   console.error('Error: No se encontró la carpeta build. Asegúrate de que Vite generó la carpeta correctamente.');
 }
-
 // Iniciar servidor
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
