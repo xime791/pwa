@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const webpush = require('web-push');
-const keys = require('../src/keys.json');
 import fs from 'fs';
 
 // Obtener __dirname en ES Modules
