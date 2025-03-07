@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
 import { fileURLToPath } from 'url';
 import path from 'path';
-const mongoose = require('mongoose');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const webpush = require('web-push');
+import bodyParser from 'body-parser';
+import webpush from 'web-push';
 import fs from 'fs';
 
 // Obtener __dirname en ES Modules
