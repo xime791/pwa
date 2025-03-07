@@ -40,7 +40,7 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-    if (event.request.method === "POST" && event.request.url.includes("/api/usuarios")) {
+    if (event.request.method === "POST" && event.request.url.includes("/usuarios")) {
         event.respondWith(
             fetch(event.request).catch(() => {
                 event.request.clone().json().then(data => {
@@ -89,7 +89,7 @@ self.addEventListener('sync', event => {
                         }
 
                         let syncPromises = users.map(user =>
-                            fetch("http://localhost:5000/api/usuarios", {
+                            fetch("/usuarios", {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify(user)

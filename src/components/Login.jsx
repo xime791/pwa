@@ -16,7 +16,7 @@ const Login = () => {
     console.log('Intentando acceder con:', credentials);
 
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch('/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
