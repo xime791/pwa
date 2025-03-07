@@ -119,7 +119,7 @@ async function sendPush(req, res) {
   }
 }
 // Servir archivos estáticos de React
-const clientBuildPath = path.join('C:', 'react-pwa (2)', 'react-pwa', 'build');
+const clientBuildPath = path.resolve(__dirname, '../../react-pwa (2)/react-pwa/build'); // Ajuste con la carpeta extra
 
 console.log('Ruta de build:', clientBuildPath);
 if (fs.existsSync(clientBuildPath)) {
