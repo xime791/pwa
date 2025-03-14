@@ -106,41 +106,44 @@ webpush.setVapidDetails(
   keys.privateKey
 );
 
-// Enviar notificación push a un usuario específico por su ID
+// Enviar notificación push a todos los usuarios
 async function sendPush(req, res) {
-  const userId = req.params.id; // Obtener el ID del usuario desde la URL
-
   try {
-    // Buscar al usuario por su ID
-    const usuario = await Usuario.findById(userId);
-
-    // Verificar si el usuario existe
-    if (!usuario) {
-      return res.status(404).json({ mensaje: "Usuario no encontrado" });
-    }
-
-    // Acceder a la suscripción del usuario
-    const subscription = usuario.subscription;
-
-    // Verificar si la suscripción existe
-    if (!subscription) {
-      return res.status(400).json({ mensaje: "No se encontró la suscripción del usuario" });
-    }
-
-    // Enviar la notificación push
-    await webpush.sendNotification(subscription, "Nuevo mensaje de notificación");
-
-    // Responder con éxito
+    const subscriptions = await Subscription.find();
+    const notifications = subscriptions.map(sub => 
+      webpush.sendNotification(sub, "Nuevo mensaje de notificación")
+    );
+    await Promise.all(notifications);
     res.json({ mensaje: "Notificación enviada correctamente" });
-
   } catch (error) {
     console.error('Error al enviar notificación:', error);
     res.status(500).json({ mensaje: "No se pudo enviar la notificación" });
   }
 }
+app.post('/sendPush', sendPush);
 
-// Ruta para enviar notificación push a un usuario específico
-app.post('/sendPush/:id', sendPush);
+// Enviar notificación push a un usuario específico por su ID
+app.post('/sendPush/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Buscar usuario por ID
+    const usuario = await Usuario.findById(id);
+    if (!usuario || !usuario.subscription) {
+      return res.status(404).json({ error: 'Usuario no encontrado o sin suscripción' });
+    }
+
+    const payload = JSON.stringify({ title: "Notificación", body: "Nuevo mensaje recibido" });
+
+    // Enviar la notificación
+    await webpush.sendNotification(usuario.subscription, payload);
+
+    res.json({ mensaje: "Notificación enviada correctamente" });
+  } catch (error) {
+    console.error('Error al enviar notificación:', error);
+    res.status(500).json({ mensaje: "No se pudo enviar la notificación", details: error.message });
+  }
+});
 
 // Servir archivos estáticos de React
 const clientBuildPath = path.join(__dirname, '../../build');
