@@ -33,6 +33,7 @@ webpush.setVapidDetails('mailto:prueba@gmail.com', publicKey, privateKey);
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -119,6 +120,7 @@ async function sendPush(req, res) {
     res.status(500).json({ mensaje: "No se pudo enviar la notificación" });
   }
 }
+app.post('/sendPush', sendPush);
 
 // Servir archivos estáticos de React
 const clientBuildPath = path.join(__dirname, '../../build');
