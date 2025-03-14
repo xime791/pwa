@@ -106,21 +106,41 @@ webpush.setVapidDetails(
   keys.privateKey
 );
 
-// Enviar notificación push
+// Enviar notificación push a un usuario específico por su ID
 async function sendPush(req, res) {
+  const userId = req.params.id; // Obtener el ID del usuario desde la URL
+
   try {
-    const subscriptions = await Subscription.find();
-    const notifications = subscriptions.map(sub => 
-      webpush.sendNotification(sub, "Nuevo mensaje de notificación")
-    );
-    await Promise.all(notifications);
+    // Buscar al usuario por su ID
+    const usuario = await Usuario.findById(userId);
+
+    // Verificar si el usuario existe
+    if (!usuario) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+
+    // Acceder a la suscripción del usuario
+    const subscription = usuario.subscription;
+
+    // Verificar si la suscripción existe
+    if (!subscription) {
+      return res.status(400).json({ mensaje: "No se encontró la suscripción del usuario" });
+    }
+
+    // Enviar la notificación push
+    await webpush.sendNotification(subscription, "Nuevo mensaje de notificación");
+
+    // Responder con éxito
     res.json({ mensaje: "Notificación enviada correctamente" });
+
   } catch (error) {
     console.error('Error al enviar notificación:', error);
     res.status(500).json({ mensaje: "No se pudo enviar la notificación" });
   }
 }
-app.post('/sendPush', sendPush);
+
+// Ruta para enviar notificación push a un usuario específico
+app.post('/sendPush/:id', sendPush);
 
 // Servir archivos estáticos de React
 const clientBuildPath = path.join(__dirname, '../../build');
