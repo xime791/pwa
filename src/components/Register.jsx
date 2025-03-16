@@ -60,6 +60,11 @@ const Register = () => {
 
             if (response.ok) {
                 console.log('Usuario creado en MongoDB');
+
+                // Muestra el alert cuando se registre correctamente
+                setTimeout(() => {
+                    alert("Usuario registrado");
+                }, 100);
             } else {
                 console.error('Error al registrar el usuario');
             }
