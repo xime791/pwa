@@ -116,12 +116,9 @@ app.post('/sendPush/:id', async (req, res) => {
       return res.status(404).json({ error: 'Usuario no encontrado o sin suscripción' });
     }
 
-    // Recibir el mensaje del cuerpo de la solicitud
-    const { title, body, icon } = req.body;
-
     const payload = JSON.stringify({
-      title: title || "Notificación",
-      body: body || "Nuevo mensaje recibido",
+      title: "Notificación",
+      body: "Tienes una notificación"
     });
 
     // Enviar la notificación
