@@ -1,20 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
     correo: '',
     contrasena: '',
   });
-  const [error, setError] = useState(null);
-  const [notificationPermission, setNotificationPermission] = useState(null);
-
-  useEffect(() => {
-    if ("Notification" in window) {
-      Notification.requestPermission().then(permission => {
-        setNotificationPermission(permission);
-      });
-    }
-  }, []);
+  const [error, setError] = useState(null); // Para manejar errores
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -38,15 +29,7 @@ const Login = () => {
       }
 
       const data = await response.json();
-      console.log('Acceso exitoso:', data);
-
-      // ✅ Mostrar notificación solo si el usuario ha dado permiso
-      if (notificationPermission === "granted") {
-        new Notification("Acceso exitoso");
-      } else {
-        alert("✅ Acceso exitoso");
-      }
-
+      alert("Acceso exitoso"); // ✅ Se reemplazó el console.log por un alert
     } catch (error) {
       console.error('Problema:', error);
       setError(error.message);
@@ -56,7 +39,7 @@ const Login = () => {
   return (
     <form onSubmit={handleSubmit}>
       <h2>Inicio de Sesión</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>} {}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <input
         type="email"
         name="correo"
