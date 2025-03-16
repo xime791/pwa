@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
     correo: '',
     contrasena: '',
   });
-  const [error, setError] = useState(null); // Para manejar errores
+  const [error, setError] = useState(null);
+  const [notificationPermission, setNotificationPermission] = useState(null);
+
+  useEffect(() => {
+    if ("Notification" in window) {
+      Notification.requestPermission().then(permission => {
+        setNotificationPermission(permission);
+      });
+    }
+  }, []);
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -31,13 +40,11 @@ const Login = () => {
       const data = await response.json();
       console.log('Acceso exitoso:', data);
 
-      // ✅ Mostrar notificación al usuario
-      if ("Notification" in window) {
-        Notification.requestPermission().then(permission => {
-          if (permission === "granted") {
-            new Notification("Acceso exitoso");
-          }
-        });
+      // ✅ Mostrar notificación solo si el usuario ha dado permiso
+      if (notificationPermission === "granted") {
+        new Notification("Acceso exitoso");
+      } else {
+        alert("✅ Acceso exitoso");
       }
 
     } catch (error) {
