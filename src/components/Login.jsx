@@ -30,6 +30,16 @@ const Login = () => {
 
       const data = await response.json();
       console.log('Acceso exitoso:', data);
+
+      // ✅ Mostrar notificación al usuario
+      if ("Notification" in window) {
+        Notification.requestPermission().then(permission => {
+          if (permission === "granted") {
+            new Notification("Acceso exitoso");
+          }
+        });
+      }
+
     } catch (error) {
       console.error('Problema:', error);
       setError(error.message);
