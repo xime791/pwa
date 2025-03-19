@@ -45,7 +45,9 @@ self.addEventListener('fetch', event => {
             fetch(event.request).catch(() => {
                 event.request.clone().json().then(data => {
                     insertIndexedDB(data);
-                    self.registration.sync.register("syncUsers");
+                    if ('SyncManager' in self.registration) {
+                        self.registration.sync.register("syncUsers");
+                    }
                 });
                 return new Response(JSON.stringify({ message: "Usuario guardado en IndexedDB y será sincronizado cuando haya internet" }), {
                     headers: { "Content-Type": "application/json" }
@@ -112,6 +114,13 @@ self.addEventListener('sync', event => {
     }
 });
 
+// Escuchar cuando el usuario recupere la conexión y forzar la sincronización
+self.addEventListener('online', () => {
+    console.log("Conexión restaurada, intentando sincronizar usuarios...");
+    self.registration.sync.register("syncUsers").catch(err => {
+        console.error("Error al registrar la sincronización después de reconexión:", err);
+    });
+});
 
 self.addEventListener('push', event => {
     self.registration.showNotification("Tienes una notificación");
