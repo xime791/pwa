@@ -12,7 +12,6 @@ function insertIndexedDB(data) {
         let db = event.target.result;
         let transaction = db.transaction("libros", "readwrite");
         let store = transaction.objectStore("libros");
-
         store.add(data);
         console.log("Usuario guardado en IndexedDB (sin conexión):", data);
     };
@@ -45,9 +44,6 @@ self.addEventListener('fetch', event => {
             fetch(event.request).catch(() => {
                 event.request.clone().json().then(data => {
                     insertIndexedDB(data);
-                    if ('SyncManager' in self.registration) {
-                        self.registration.sync.register("syncUsers");
-                    }
                 });
                 return new Response(JSON.stringify({ message: "Usuario guardado en IndexedDB y será sincronizado cuando haya internet" }), {
                     headers: { "Content-Type": "application/json" }
@@ -73,7 +69,6 @@ self.addEventListener('fetch', event => {
 self.addEventListener('sync', event => {
     if (event.tag === "syncUsers") {
         console.log("Intentando sincronizar usuarios con MongoDB...");
-
         event.waitUntil(
             new Promise((resolve, reject) => {
                 let request = indexedDB.open("database", 1);
@@ -114,12 +109,10 @@ self.addEventListener('sync', event => {
     }
 });
 
-// Escuchar cuando el usuario recupere la conexión y forzar la sincronización
+// Registrar sincronización solo cuando vuelva la conexión
 self.addEventListener('online', () => {
-    console.log("Conexión restaurada, intentando sincronizar usuarios...");
-    self.registration.sync.register("syncUsers").catch(err => {
-        console.error("Error al registrar la sincronización después de reconexión:", err);
-    });
+    console.log("Conexión restaurada, registrando sincronización de usuarios.");
+    self.registration.sync.register("syncUsers");
 });
 
 self.addEventListener('push', event => {
